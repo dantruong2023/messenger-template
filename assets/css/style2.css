@@ -5,9 +5,14 @@
 }
 :root{
     --primary-chat--color : #0084ff;
+    --primary-color--app : aliceblue;
 }
 html{
     font-family: 'Courier New', Courier, monospace;
+}
+
+.text-black{
+    color : #333 !important;
 }
 
 .smooth:hover{
@@ -31,13 +36,13 @@ html{
     height: 100vh;
     display: grid;
     grid-template-columns: 50px 400px auto ;
-    background-color: aliceblue;
+    background-color: var(--primary-color--app);
     position:fixed ;
     overflow: auto;
 }
 
-/* Mobile */
-@media screen and (max-width: 767px) {
+/* Mobile and Ipad*/
+@media screen and (max-width: 1140px) {
     #content .item,
     #content .chat,
     #content .chat-op {
@@ -50,38 +55,22 @@ html{
         width: 100%;
     }
     #content .messages .messages__header{
-        position: fixed;
-        z-index : 1;
         width: 100%;
-        background-color: aliceblue;
+        background-color: var(--primary-color--app);
         left : 0;
         top : 0;
         padding : 16px;
     }
     #content .messages .messages-list{
-        margin-top : 20%;
+        box-sizing: border-box;
         width: 100%;
         overflow: hidden;
-    }
-    
-}
-
-/* Ipad */
-@media screen and (min-width: 768px) and (max-width : 1140px) {
-    #content .item,
-    #content .messages
-    {
-        display: block;
-        width: auto;
-    }
-    #content .item,#content .chat {
-        display : flex !important;
     }
     .chat-op{
         display: none;
     }
-   
 }
+
 
 /* Desktop */
 @media screen and (min-width : 1141px) {
@@ -200,10 +189,11 @@ html{
 .messages-list{
     padding : 8px 0;
     overflow-y: scroll;
-    max-height : 90%;
+    max-height : 100%;
 }
 
 .messages-item{
+    width: 100%;
     height : 80px;
     display : flex;
     align-items: center;
@@ -245,11 +235,11 @@ html{
     display : flex;
     flex-direction: column;
     justify-content: space-between;
+    border-right: 1px solid #ccc;
 }
-.chat-op{
-    background-color: aqua;
-    display: none;
-}
+
+
+
 .chat .chatheader{
     width: 100%;
     height: min-content;
@@ -325,11 +315,10 @@ html{
 .chatcontent{
     display : flex;
     flex-direction: column;
-    justify-content : flex-end;
-    align-items: end;
+    justify-content :flex-end;
     flex : 1;
     overflow-y: scroll;
-    height: min-content;
+    min-height: 0;
 }
 
 .chatcontent p{
@@ -367,7 +356,9 @@ html{
 
 .chatcontent .send{
     justify-content: flex-end;
+    align-items: end;
 }
+
 
 .chatcontent .send p{
     border-radius: 20px 5px 5px 20px;
@@ -407,3 +398,53 @@ html{
     border-radius : 20px;
     border : 1px solid #ccc;
 }
+
+.chat-op{
+    background-color: var(--primary-color--app);
+    max-height: 100vh;
+    overflow-y : scroll;
+}
+
+.chat-op ul{
+    padding-left: 16px;
+}
+
+.chat-op ul li.smooth{
+    justify-content: flex-start;
+}
+
+.chat-op ul li.smooth i{
+    margin-right : 8px;
+    color : var(--primary-chat--color);
+}
+
+.chat-op .info{
+    margin : 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chat-op .info img{
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+}
+
+.chat-op .info p{
+    padding : 8px 0 0 0;
+    margin : 0;
+    font-weight: 600;
+}
+
+.chat-op .function,
+.chat-op .customize-chat,
+.chat-op .medias,
+.chat-op .privacy{
+    display: flex;
+    justify-content: space-between;
+    padding : 16px 20px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
