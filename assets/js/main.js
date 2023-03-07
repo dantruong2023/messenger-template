@@ -32,6 +32,14 @@ sendMessage = function(msg){
   <i class="bi bi-check-circle-fill"></i>
 </div>`
   $(".text-user").value = ""
+  scrollEndChat()
+}
+// for(let i =0;i<100;++i){
+//   sendMessage(i)
+// }
+scrollEndChat = function(){
+  var objDiv = $('.wrapcontent');
+  objDiv.scrollTop = objDiv.scrollHeight;
 }
 
 //Send messages when click btn Send
@@ -44,7 +52,6 @@ btnSend.onclick = ()=>{
 //<i class="bi bi-send-fill smooth"></i>
 //<i class="bi user-icon bi-hand-thumbs-up-fill"></i>
 inputUser.oninput = ()=>{
-  console.log("Change")
   $('.chatcontent').scrollDown = $('.chatcontent').scrollHeight
   $('.sendBTN').innerHTML = `<i class="bi bi-emoji-smile-fill smooth"></i>`
   if(inputUser.value == ""){

@@ -5,7 +5,8 @@
 }
 :root{
     --primary-chat--color : #0084ff;
-    --primary-color--app : aliceblue;
+    --primary-color--app : #ffffff; /*aliceblue*/
+    
 }
 html{
     font-family: 'Courier New', Courier, monospace;
@@ -312,12 +313,15 @@ html{
     align-items: center;
 }
 
+.wrapcontent{
+    overflow-y: scroll;
+    flex : 1;
+}
+
 .chatcontent{
     display : flex;
     flex-direction: column;
-    justify-content :flex-end;
-    flex : 1;
-    overflow-y: scroll;
+    justify-content : flex-end;
     min-height: 0;
 }
 
@@ -331,11 +335,17 @@ html{
     display : flex;
     width: 100%;
     align-items: center;
-    margin : 8px 0;
+    margin-top : 8px;
 }
 
-.chatcontent .receive{
+.chatcontent .receive p{
     justify-content: flex-start;
+    background-color: #e4e6eb;
+    color : #333;
+}
+
+.send + .send{
+    margin-top: 2px;
 }
 
 .chatcontent .send img,
