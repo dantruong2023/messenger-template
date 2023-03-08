@@ -459,6 +459,7 @@ html{
 
 .chat-op .function,
 .chat-op .customize-chat,
+.chat-op .chat-members,
 .chat-op .medias,
 .chat-op .privacy{
     display: flex;
