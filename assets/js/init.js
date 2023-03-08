@@ -1,74 +1,38 @@
-//Function load messages history
-loadMessagesHistory = (roomID)=>{
-    const chatHistory = listMsg.getMessagesRoom(roomID)
-    const thisRoom = getRoomFromID(roomID)
-    setChatOption({
-      photoURL : thisRoom.photoURL,
-      displayName : thisRoom.roomName,
-      typeRoom : thisRoom.type
-    })
-    document.documentElement.style.setProperty('--primary-chat--color', thisRoom.theme);
-    $('.chatheader-title').innerHTML = `<div class="chatheader-avt">
-          <img src="./assets/img/${thisRoom.photoURL}" alt="">
-      </div>
-      <div class="chatheader-name">
-          <span>${thisRoom.roomName}</span><br>
-          <span>Active now</span>
-      </div>`
-    chatBox.innerHTML = ""
-    chatHistory.forEach((msg)=>{
-      if(msg.senderID != thisUser.uid){
-        chatBox.innerHTML += ` <div class="receive">
-        <img src="./assets/img/${getUserFromID(msg.senderID).photoURL}" alt="">
-        <p>${msg.chatContent}</p>
-    </div>`
-      }
-      else{
-        chatBox.innerHTML += `<div class="send">
-        <p>${msg.chatContent}</p>
-        <div class="blank"></div>
-    </div>`
-      }
-    })
-    let lastMsg = chatBox.lastElementChild
-    if(lastMsg?.classList.contains('send')){
-      let status = lastMsg.querySelector('.blank')
-      status.outerHTML = `<i class="bi bi-check-circle-fill"></i>`
-    }
-    scrollEndChat()
-}
+const $ = document.querySelector.bind(document)
+const $$ = document.querySelectorAll.bind(document)
+const content = $('#content');
+const chatOp = $('.chat-op');
+const chat = $('.chat');
+const chatOpBtn = $('#chat-op-btn');
+const bodyChat = $('.chatcontent')
+const btnSend = $('.sendBTN')
+const inputUser = $('.text-user')
+const messagesList = $('.messages-list')
+const chatBox = $('.chatcontent')
 
-//Function load Messages list
-new Promise(res => {
-    res()
-  }).then(()=>{
-    rooms.forEach((room)=>{
-      messagesList.innerHTML += `<div class="messages-item" data-uidroom="${room.roomID}">
-      <div class="messages-item__avatar">
-          <img src="./assets/img/${room.photoURL}" alt="">
-      </div>
-      <div class="messages-item__content">
-          <p>${room.roomName}</p>
-          <div>
-              <span>${room.lastMessage} ·  23p</span>
-          </div>
-      </div>
-    </div>`
-    })
-  })
-  .then(()=>{
-    //Add event when click message item
-    $$('.messages-item').forEach(msg=>{
-      msg.onclick = (e)=>{
-        $('.selected').classList.remove('selected')
-        const msg_item = e.target.closest('.messages-item')
-        msg_item.classList.add('selected')
-        loadMessagesHistory(msg_item.dataset.uidroom)
-        thisRoom = Object.assign({},getRoomFromID(msg_item.dataset.uidroom))
-    }
-  })
-  })
-  .then(()=>{
-    $('.messages-item').classList.add('selected')
-    loadMessagesHistory(rooms[0].roomID)
-  })
+//Mockup data
+rooms = []
+rooms.push(new Room("Bùi Anh Công","room1","","private","test3.jpg","Công : ủa alo"))
+rooms.push(new Room("Trịnh Phương Thảo","room2","","private","test1.jpg","Bạn : cute z tr"))
+rooms.push(new Room("Nguyễn Tuấn Anh","room3","","private","test7.jpg",""))
+rooms.push(new Room("Hội ae cây chuối","room4","","group","test8.jpg",""))
+rooms[1].setTheme("#e5155a")
+thisRoom = Object.assign({},rooms[0])
+
+users = []
+users.push(new User("user01","admin","1","mail@mail.com","Nguyễn Ngọc Đan Trường","test1.jpg",rooms))
+users.push(new User("user02","admin2","1","mail@mail.com","Bùi Anh Công","test3.jpg",rooms))
+users.push(new User("user03","admin3","1","mail@mail.com","Trịnh Phương Thảo","test1.jpg",rooms))
+users.push(new User("user04","admin4","1","mail@mail.com","Nguyễn Tuấn Anh","test7.jpg",rooms))
+thisUser = Object.assign({},users[0])
+
+listMsg = new MessagesList()
+listMsg.push(new Message("Chào bạn","room1","1:13","user01"))
+listMsg.push(new Message("Hi bạn","room1","1:14","user02"))
+listMsg.push(new Message("Hi bạn","room1","1:15","user01"))
+listMsg.push(new Message("@all Hi mng","room4","1:15","user01"))
+listMsg.push(new Message("Hi","room4","1:15","user02"))
+listMsg.push(new Message("Nhóm gì the?","room4","1:15","user03"))
+listMsg.push(new Message("Hello","room4","1:15","user04"))
+
+

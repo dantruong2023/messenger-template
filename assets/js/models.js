@@ -1,15 +1,3 @@
-const $ = document.querySelector.bind(document)
-const $$ = document.querySelectorAll.bind(document)
-const content = $('#content');
-const chatOp = $('.chat-op');
-const chat = $('.chat');
-const chatOpBtn = $('#chat-op-btn');
-const bodyChat = $('.chatcontent')
-const btnSend = $('.bi.bi-send-fill')
-const inputUser = $('.text-user')
-const messagesList = $('.messages-list')
-const chatBox = $('.chatcontent')
-
 class User{
     constructor(uid,usr,pwd,email,displayName,photoURL,rooms){
       this.uid = uid
@@ -64,3 +52,5 @@ class User{
       return res
     }
   }
+
+  
