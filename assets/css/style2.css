@@ -323,6 +323,14 @@ html{
     flex-direction: column;
     justify-content : flex-end;
     min-height: 0;
+    padding-top : 32px;
+}
+.chatcontent .notify span{
+    color : #333;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .chatcontent p{
@@ -349,9 +357,11 @@ html{
 }
 
 .chatcontent .send img,
-.chatcontent .receive img{
+.chatcontent .receive img,
+.chatcontent .send .blank{
     border-radius: 50%;
     margin : 0 8px;
+    min-width: 18px;
 }
 
 .chatcontent .receive img{
