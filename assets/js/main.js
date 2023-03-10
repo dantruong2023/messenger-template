@@ -1,6 +1,25 @@
-
+const primaryColor = '--primary-chat--color'
 
 const app = {
+  currentRoom : null,
+  currentIcon : 'bi-hand-thumbs-up-fill',
+  //Map event when click button function
+  mapEvent : function(selector,callback){
+      $(selector).onclick = callback
+  },
+
+  //Set :root DOM attribute
+  setRootAttribute : function(attr, value){
+    document.documentElement.style.setProperty(attr, value);
+  },
+  loadThemes : function(){
+    $('.contentForm__content').innerHTML = ''
+    themes.forEach((theme)=>{
+      $('.contentForm__content').innerHTML += `
+        <div class="item theme" data-color="${theme}" style="--color : ${theme}"></div>`
+    })
+  },
+
   //Handler event
   handlerEvent : function(){
     let self = this
@@ -19,6 +38,7 @@ const app = {
       }
     });
 
+
     //Scroll to end chat
     scrollEndChat = function(){
         var objDiv = $('.wrapcontent');
@@ -27,14 +47,18 @@ const app = {
 
     //Update status of btnSend
     updateStatusBtnSend = ()=>{
-      $('.sendBTN').innerHTML = `<i class="bi bi-emoji-smile-fill smooth"></i>`
+      $('.sendBTN').innerHTML = 
+      `<i class="bi bi-emoji-smile-fill smooth"></i>
+      <i class="bi bi-send-fill smooth"></i>
+      <i class="bi user-icon ${self.currentIcon}"></i>`
+      
       if(inputUser.value == ""){
-        $('.sendBTN').innerHTML += `<i class="bi bi-send-fill smooth" style="display : none"></i>`
-        $('.sendBTN').innerHTML += `<i class="bi user-icon bi-hand-thumbs-up-fill"></i>`
+        $('.sendBTN > .bi-send-fill').style.display = 'none'
+        $('.sendBTN > .user-icon').style.display = 'inline-block'
       }
       else{
-          $('.sendBTN').innerHTML += `<i class="bi user-icon bi-hand-thumbs-up-fill" style="display : none"></i>`
-          $('.sendBTN').innerHTML += `<i class="bi bi-send-fill smooth"></i>`
+        $('.sendBTN > .bi-send-fill').style.display = 'inline-block'
+        $('.sendBTN > .user-icon').style.display = 'none'
       }
     }
 
@@ -87,6 +111,54 @@ const app = {
           }
         }
       })
+    
+    hideForm = ()=>{
+        $('.save.smooth').disabled = true
+        $('#modalForm').style.display = 'none'
+        this.setRootAttribute(primaryColor,this.currentRoom.theme)
+    }
+
+    showForm = ()=>{
+        $('.save.smooth').disabled = true
+        $('#modalForm').style.display = 'flex'
+    }
+
+    //Hide modalForm
+    $('#modalForm').onclick = ()=>{
+      hideForm()
+    }
+
+    //Click on .contentForm
+    $('.contentForm').onclick = (e)=>{
+      e.stopPropagation();
+    }
+    $('.contentForm__footer .cancel').onclick = ()=>{
+        hideForm()
+    }
+    $('.contentForm__header i.bi-x').onclick = hideForm
+
+    //Click on item
+    $$('.contentForm__content .item').forEach((item)=>{
+      item.onclick = ()=>{
+        if($('.item.active') != undefined){
+          $('.item.active').classList.remove('active')
+        }
+        item.classList.add('active')
+        this.setRootAttribute(primaryColor,item.dataset.color)
+        $('button.save.smooth').disabled = false
+      }
+    })
+    
+    //Click customize theme
+    $('.customize-chat.theme').onclick = ()=>{
+      showForm()
+      $('.save.smooth').outerHTML = '<button class="save smooth" disabled>Save</button>'
+      $('.save.smooth').classList.add('theme')
+      self.mapEvent('.save.smooth.theme',()=>{
+        self.updateTheme($('.theme.active').dataset.color)
+        hideForm()
+      })
+    }
   },
   //Function get user from userID
   getUserFromID : function(userID)  { 
@@ -98,14 +170,21 @@ const app = {
     return rooms.find(m => m.roomID == roomID)
   },
 
+  //Update new theme to room
+  updateTheme : function(theme){
+    let room = this.getRoomFromID(this.currentRoom.roomID)
+    room.setTheme(theme)
+    this.currentRoom = Object.assign({},room)
+  },
+
   //Function set info chat option
   setChatOption : function(roomOption){
-    const profile = `<div class="btn smooth">
-    <div class="btn__icon">
-    <i class="bi bi-person-circle"></i>
-    </div>
-    <span>Profile</span>
-    </div>`
+    const profile = `<div class="btn smooth profile">
+        <div class="btn__icon">
+        <i class="bi bi-person-circle"></i>
+        </div>
+        <span>Profile</span>
+        </div>`
     const isPrivate = roomOption.typeRoom != 'group'
     $('.chat-op .info').innerHTML = `<img src="./assets/img/${roomOption.photoURL}" alt="">
     <p>${roomOption.displayName}</p>
@@ -129,17 +208,33 @@ const app = {
     </div>
     <span>Search</span>
     </div>`
+    
   },
   //Function load messages history
   loadMessagesHistory : function(roomID){
     const chatHistory = listMsg.getMessagesRoom(roomID)
     const thisRoom = this.getRoomFromID(roomID)
+    this.currentRoom = Object.assign({},thisRoom)
+
+    //Event send icon
+    this.mapEvent('.bi.user-icon',()=>{
+      console.log("send icon")
+      this.sendMessage(`<i class="bi user-icon ${this.currentIcon}" style="font-size:36px;"></i>`,false)
+    })
+
+    //Set info chat option
     this.setChatOption({
       photoURL : thisRoom.photoURL,
       displayName : thisRoom.roomName,
       typeRoom : thisRoom.type
     })
-    document.documentElement.style.setProperty('--primary-chat--color', thisRoom.theme);
+    if(thisRoom.type != 'group'){
+      this.mapEvent('.btn.smooth.profile',()=>{
+        window.open(this.getUserFromID(thisRoom.members).linkProfile,'_blank')
+      })
+    }
+    let lastSenderID = ''
+    this.setRootAttribute(primaryColor,thisRoom.theme)
     $('.chatheader-title').innerHTML = `<div class="chatheader-avt">
           <img src="./assets/img/${thisRoom.photoURL}" alt="">
           </div>
@@ -147,20 +242,25 @@ const app = {
           <span>${thisRoom.roomName}</span><br>
           <span>Active now</span>
           </div>`
-          chatBox.innerHTML = ""
-          chatHistory.forEach((msg)=>{
-            if(msg.senderID != thisUser.uid){
-              chatBox.innerHTML += ` <div class="receive">
-              <img src="./assets/img/${this.getUserFromID(msg.senderID).photoURL}" alt="">
-              <p>${msg.chatContent}</p>
-              </div>`
-            }
-            else{
-              chatBox.innerHTML += `<div class="send">
-              <p>${msg.chatContent}</p>
-        <div class="blank"></div>
-        </div>`
-      }
+      chatBox.innerHTML = ""
+      chatHistory.forEach((msg)=>{
+        // Message from other user
+        if(msg.senderID != thisUser.uid){
+          chatBox.innerHTML += ` 
+          ${thisRoom.type == 'group' && msg.senderID != lastSenderID ? '<div class="notify name"><span>'+this.getUserFromID(msg.senderID).displayName.split(" ")[this.getUserFromID(msg.senderID).displayName.split(" ").length - 1]+'</span></div>' : ''}
+          <div class="receive">
+            <img src="./assets/img/${this.getUserFromID(msg.senderID).photoURL}" alt="">
+            <p>${msg.chatContent}</p>
+          </div>`
+        }
+        else{
+                // Message from this user
+                chatBox.innerHTML += `<div class="send">
+                <p>${msg.chatContent}</p>
+          <div class="blank"></div>
+          </div>`
+        }
+        lastSenderID = msg.senderID
     })
     let lastMsg = chatBox.lastElementChild
     if(lastMsg?.classList.contains('send')){
@@ -181,19 +281,28 @@ const app = {
       msg_item.querySelector('.messages-item__content span').innerText = msg
     })
   },
+
   //Function send message
-  sendMessage : function(msg){
-    if(inputUser.value === ""){
+  sendMessage : function(msg,notIcon = true){
+    if(notIcon && inputUser.value === ""){
       return
     }
     let message = new Message(inputUser.value,thisRoom.roomID,"9:18",thisUser.uid)
     listMsg.push(message)
     this.changeLastMessage(thisRoom.roomID,"Bạn : "+message.chatContent + " ·  now")
-    bodyChat.innerHTML += `<div class="send">
-    <p>${msg}</p>
-    <i class="bi bi-check-circle-fill"></i>
-    </div>`
-    $(".text-user").value = ""
+    if(notIcon){
+      bodyChat.innerHTML += `<div class="send">
+        <p>${msg}</p>
+        <i class="bi bi-check-circle-fill"></i>
+        </div>`
+      $(".text-user").value = ""
+    }
+    else{
+      bodyChat.innerHTML += `<div class="send">
+        ${msg}
+        <i class="bi bi-check-circle-fill"></i>
+        </div>`
+    }
     scrollEndChat()
   },
   //Function load Message List
@@ -235,6 +344,7 @@ const app = {
   },
   //Main
   run : function(){
+    this.loadThemes()
     this.handlerEvent()
     this.loadMessageList()
   }

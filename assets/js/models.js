@@ -7,6 +7,7 @@ class User{
       this.displayName = displayName
       this.photoURL = photoURL
       this.rooms = Object.assign([],rooms)
+      this.linkProfile = "https://www.facebook.com/berlin.03"
     }
   }
   

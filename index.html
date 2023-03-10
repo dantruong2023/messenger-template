@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/verdoms/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/verdoms/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="./assets/css/style2.css">
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
     <title>Messenger Real</title>
     <link rel="shortcut icon" href="./assets/img/app.ico" type="image/x-icon">
 </head>
@@ -131,7 +132,7 @@
                 <span>Active 13m ago</span>
             </div>
             <div class="function">
-                <div class="btn smooth">
+                <div class="btn smooth profile">
                     <div class="btn__icon">
                         <i class="bi bi-person-circle"></i>
                     </div>
@@ -154,7 +155,7 @@
                 Customize chat <i class="bi bi-arrow-right"></i>
             </div>
             <ul class="customize-chat__menu">
-                <li class="customize-chat smooth">
+                <li class="customize-chat theme smooth">
                     <i class="bi bi-record-circle-fill"></i> Change theme
                 </li>
                 <li class="customize-chat smooth">
@@ -206,7 +207,24 @@
 
 
     </div>
-
+    <div id="modalForm">
+        <div class="contentForm">
+            <!-- Form change theme -->
+            <div class="contentForm__header">
+                <p>Themes</p>
+                <i class="bi bi-x"></i>
+            </div>
+            <div class="contentForm__content">
+                <!-- <div class="item" data-color="#e81f60" style="--color : #e81f60"></div> -->
+                <!-- <div class="item" data-color="#0084ff" style="--color : #0084ff"></div> -->
+                
+            </div>
+            <div class="contentForm__footer">
+                <button class="cancel smooth">Cancel</button>
+                <button class="save smooth" disabled>Save</button>
+            </div>
+        </div>
+    </div>
 
    
     <script src="./assets/js/models.js"></script>
